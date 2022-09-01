@@ -42,16 +42,11 @@ public:
 	void print_reverse(char t = ' ') const;
 
 	List<T> operator+(const List<T>& l);
-	List<T> operator*(const List<T>& l);
 	void operator+=(const List<T>& l);
-	void operator*=(const List<T>& l);
 
-	bool operator==(const List<T>& l);
-	bool operator!=(const List<T>& l);
 
 	void sort(bool(*method)(T, T) = asc);
 	void reverse();
-
 };
 
 template<class T>
@@ -78,6 +73,15 @@ Data<T>* List<T>::find(size_t ind)
 }
 
 template<class T>
+List<T>::List(initializer_list<T> list)
+{
+	for (T l : list)
+	{
+		push_back(l);
+	}
+}
+
+template<class T>
 List<T>::~List()
 {
 	this->clear();
@@ -92,6 +96,24 @@ List<T>::List(const List& l)
 		this->push_back(temp->value);
 		temp = temp->next;
 	}
+}
+
+template<class T>
+List<T>& List<T>::operator=(const List<T>& l)
+{
+	if (this == &l)
+		return *this;
+
+	this->clear();
+
+	Data<T>* temp = l.first;
+	while (temp)
+	{
+		this->push_back(temp->value);
+		temp = temp->next;
+	}
+
+	return *this;
 }
 
 template<class T>
@@ -135,7 +157,11 @@ void List<T>::push_front(const T& value)
 template<class T>
 void List<T>::insert(const T& value, size_t ind)
 {
-	assert(ind >= 0 && ind <= size);
+	//assert(ind >= 0 && ind <= size);
+
+	if (ind < 0 || ind > size)
+		throw MyException(to_string(__LINE__), __FILE__, "Index out of range - " + to_string(ind));
+
 	if (ind == 0)
 	{
 		this->push_front(value);
@@ -159,7 +185,9 @@ void List<T>::insert(const T& value, size_t ind)
 template<class T>
 void List<T>::pop_back()
 {
-	assert(size > 0);
+	//assert(size > 0);
+	if (size <= 0)
+		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
 	if (size == 1)
 	{
 		delete last;
@@ -177,7 +205,9 @@ void List<T>::pop_back()
 template<class T>
 void List<T>::pop_front()
 {
-	assert(size > 0);
+	//assert(size > 0);
+	if (size <= 0)
+		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
 	if (size == 1)
 	{
 		delete first;
@@ -194,7 +224,10 @@ void List<T>::pop_front()
 template<class T>
 void List<T>::remove(size_t ind)
 {
-	assert(ind >= 0 && ind < size);
+	//assert(ind >= 0 && ind < size);
+	if (ind < 0 || ind >= size)
+		throw MyException(to_string(__LINE__), __FILE__, "Index out of range - " + to_string(ind));
+
 	if (ind == 0)
 	{
 		this->pop_front();
@@ -216,7 +249,9 @@ void List<T>::remove(size_t ind)
 template<class T>
 T List<T>::front()
 {
-	assert(size > 0);
+	//assert(size > 0);
+	if (size <= 0)
+		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
 	return first->value;
 }
 
@@ -239,7 +274,6 @@ template<class T>
 T& List<T>::operator[](size_t ind)
 {
 	//assert(ind >= 0 && ind < size);
-
 	if (ind < 0 || ind >= size)
 		throw MyException(to_string(__LINE__), __FILE__, "Index out of range - " + to_string(ind));
 	return find(ind+1)->value;
@@ -294,3 +328,58 @@ void List<T>::print_reverse(char t) const
 	}
 	cout << '\n';
 }
+
+template<class T>
+List<T> List<T>::operator+(const List<T>& l)
+{
+	Data<T>* temp = l.first;
+	while (temp)
+	{
+		this->push_back(temp->value);
+		temp = temp->next;
+	}
+
+	return *this;
+}
+
+template<class T>
+void List<T>::operator+=(const List<T>& l)
+{
+	*this = *this + l;
+}
+
+template<class T>
+void List<T>::sort(bool(*method)(T, T))
+{
+	for (size_t i = 0; i < size - 1; i++)
+	{
+		for (size_t j = 0; j < size - 1 - i; j++)
+		{
+			T& val1 = this->operator[](j);
+			T& val2 = this->operator[](j + 1);
+			if (method(val1, val2))
+			{
+				swap(val1, val2);
+			}
+		}
+	}
+}
+
+template<class T>
+void List<T>::reverse()
+{
+	for (size_t i = 0; i < size - 1; i++)
+	{
+		for (size_t j = 0; j < size - 1 - i; j++)
+		{
+			T& val1 = this->operator[](j);
+			T& val2 = this->operator[](j + 1);
+			if (val1 < val2)
+			{
+				swap(val1, val2);
+			}
+		}
+	}
+}
+
+
