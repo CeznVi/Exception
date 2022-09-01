@@ -122,12 +122,20 @@ void List<T>::push_back(const T& value)
 	if (size == 0)
 	{
 		last = new Data<T>;
+		//якщо пам'ять не виділилась то виклик виключення
+		if (!last)
+			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+
 		last->value = value;
 		first = last;
 	}
 	else
 	{
 		last->next = new Data<T>;
+
+		if (!last->next)
+			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+
 		last->next->value = value;
 		last->next->prev = last;
 		last = last->next;
@@ -141,12 +149,20 @@ void List<T>::push_front(const T& value)
 	if (size == 0)
 	{
 		last = new Data<T>;
+		
+		if (!last)
+			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+
 		last->value = value;
 		first = last;
 	}
 	else
 	{
 		first->prev = new Data<T>;
+
+		if (!first->prev)
+			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+
 		first->prev->value = value;
 		first->prev->next = first;
 		first = first->prev;
@@ -332,6 +348,13 @@ void List<T>::print_reverse(char t) const
 template<class T>
 List<T> List<T>::operator+(const List<T>& l)
 {
+	//Перевірка на переповненість лічильника списку
+	size_t max_sizeT = (size_t)-1;
+	
+
+	if ((max_sizeT - this->size - l.size) <= 0)
+		throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+
 	Data<T>* temp = l.first;
 	while (temp)
 	{
