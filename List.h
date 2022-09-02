@@ -47,6 +47,8 @@ public:
 
 	void sort(bool(*method)(T, T) = asc);
 	void reverse();
+
+	void saveInFile();
 };
 
 template<class T>
@@ -354,7 +356,7 @@ List<T> List<T>::operator+(const List<T>& l)
 	
 
 	if ((max_sizeT - (this->size) - l.size) <= 0)
-		OverflowError(to_string(__LINE__), __FILE__);
+		throw OverflowError(to_string(__LINE__), __FILE__);
 
 	Data<T>* temp = l.first;
 	while (temp)
@@ -404,6 +406,27 @@ void List<T>::reverse()
 			}
 		}
 	}
+}
+
+template<class T>
+void List<T>::saveInFile()
+{
+	std::ofstream fout;
+	fout.open("List.txt", std::ios::app);
+
+	if (!fout)
+		throw FileSystemError(to_string(__LINE__), __FILE__);
+
+	Data<T>* temp = first;
+	while (temp)
+	{
+		fout << temp->value << ' ';
+		temp = temp->next;
+	}	
+	fout << '\n';
+	fout.close();
+
+
 }
 
 

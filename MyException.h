@@ -69,3 +69,15 @@ public:
 		err = (string)__DATE__ + ", " + (string)__TIME__ + ",Line: " + l + ", \nFile: " + f + ",\nError: overflow error";
 	}
 };
+
+//Вийняток при якому оброблюються помилки доступу до файлів
+class FileSystemError : public MyException
+{
+
+public:
+	FileSystemError(string l, string f)
+	{
+		err = (string)__DATE__ + ", " + (string)__TIME__ + ",Line: " + l + ", \nFile: " + f + ",\nError: can`t take acces to file";
+	
+	}
+};
