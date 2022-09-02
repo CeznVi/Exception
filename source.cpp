@@ -23,8 +23,8 @@ int main()
         l.print();
 
         //Вийняток №1 - вихід за межі масиву
-        //cout << l[5] << '\n';
-        //l.remove(6);
+        //cout << l[15] << '\n';
+        //l.remove(16);
         //l.clear();
         //cout << "LENGHT IS " << l.length() << '\n';
         //l.insert(3, 1);
@@ -44,13 +44,9 @@ int main()
            
         //Вийняток №4 - при додаванні списків перевірка що не сталося
         // переповнення лічильника SIZE
-        //l.push_back(6);
-        //l.push_front(21);
-
-
-
-        l.print();
-
+        //l = l + l2;
+        //l.print();
+       
 
 
     }

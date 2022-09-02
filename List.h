@@ -124,7 +124,7 @@ void List<T>::push_back(const T& value)
 		last = new Data<T>;
 		//якщо пам'ять не виділилась то виклик виключення
 		if (!last)
-			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+			throw BadAlloc(to_string(__LINE__), __FILE__);
 
 		last->value = value;
 		first = last;
@@ -134,7 +134,7 @@ void List<T>::push_back(const T& value)
 		last->next = new Data<T>;
 
 		if (!last->next)
-			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+			throw BadAlloc(to_string(__LINE__), __FILE__);
 
 		last->next->value = value;
 		last->next->prev = last;
@@ -151,7 +151,7 @@ void List<T>::push_front(const T& value)
 		last = new Data<T>;
 		
 		if (!last)
-			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+			throw BadAlloc(to_string(__LINE__), __FILE__);
 
 		last->value = value;
 		first = last;
@@ -161,7 +161,7 @@ void List<T>::push_front(const T& value)
 		first->prev = new Data<T>;
 
 		if (!first->prev)
-			throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+			throw BadAlloc(to_string(__LINE__), __FILE__);
 
 		first->prev->value = value;
 		first->prev->next = first;
@@ -176,7 +176,7 @@ void List<T>::insert(const T& value, size_t ind)
 	//assert(ind >= 0 && ind <= size);
 
 	if (ind < 0 || ind > size)
-		throw MyException(to_string(__LINE__), __FILE__, "Index out of range - " + to_string(ind));
+		throw OutOfRange(to_string(__LINE__), __FILE__, to_string(ind));
 
 	if (ind == 0)
 	{
@@ -203,7 +203,7 @@ void List<T>::pop_back()
 {
 	//assert(size > 0);
 	if (size <= 0)
-		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
+		throw LengthError(to_string(__LINE__), __FILE__, to_string(size));
 	if (size == 1)
 	{
 		delete last;
@@ -223,7 +223,7 @@ void List<T>::pop_front()
 {
 	//assert(size > 0);
 	if (size <= 0)
-		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
+		throw LengthError(to_string(__LINE__), __FILE__, to_string(size));
 	if (size == 1)
 	{
 		delete first;
@@ -242,7 +242,7 @@ void List<T>::remove(size_t ind)
 {
 	//assert(ind >= 0 && ind < size);
 	if (ind < 0 || ind >= size)
-		throw MyException(to_string(__LINE__), __FILE__, "Index out of range - " + to_string(ind));
+		throw OutOfRange(to_string(__LINE__), __FILE__, to_string(ind));
 
 	if (ind == 0)
 	{
@@ -267,7 +267,7 @@ T List<T>::front()
 {
 	//assert(size > 0);
 	if (size <= 0)
-		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
+		throw LengthError(to_string(__LINE__), __FILE__, to_string(size));
 	return first->value;
 }
 
@@ -276,7 +276,7 @@ T List<T>::back()
 {
 	//assert(size > 0);
 	if (size <= 0)
-		throw MyException(to_string(__LINE__), __FILE__, "Size is - " + to_string(size));
+		throw LengthError(to_string(__LINE__), __FILE__, to_string(size));
 	return last->value;
 }
 
@@ -291,7 +291,8 @@ T& List<T>::operator[](size_t ind)
 {
 	//assert(ind >= 0 && ind < size);
 	if (ind < 0 || ind >= size)
-		throw MyException(to_string(__LINE__), __FILE__, "Index out of range - " + to_string(ind));
+		throw OutOfRange(to_string(__LINE__), __FILE__, to_string(ind));
+
 	return find(ind+1)->value;
 }
 
@@ -352,8 +353,8 @@ List<T> List<T>::operator+(const List<T>& l)
 	size_t max_sizeT = (size_t)-1;
 	
 
-	if ((max_sizeT - this->size - l.size) <= 0)
-		throw MyException(to_string(__LINE__), __FILE__, "Out of memory");
+	if ((max_sizeT - (this->size) - l.size) <= 0)
+		OverflowError(to_string(__LINE__), __FILE__);
 
 	Data<T>* temp = l.first;
 	while (temp)
